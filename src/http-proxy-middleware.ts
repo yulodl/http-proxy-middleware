@@ -102,7 +102,12 @@ export class HttpProxyMiddleware {
             return;
           }
 
-          this.proxy.web(req, res, activeProxyOptions, retryable ? cb : undefined);
+          if (!retryable) {
+            this.proxy.web(req, res, activeProxyOptions);
+            return;
+          }
+
+          this.proxy.web(req, res, activeProxyOptions, cb);
         };
 
         cb(null, req, res);
