@@ -249,6 +249,13 @@ export class HttpProxyMiddleware {
   };
 
   private logError = (err, req: Request, res: Response, target?) => {
+    // handle error without trailing params
+    // ref: https://github.com/http-party/node-http-proxy/blob/master/lib/http-proxy/index.js#L68
+    if (!req) {
+      this.logger.error(err);
+      return;
+    }
+
     const hostname = req.headers?.host || req.hostname || req.host; // (websocket) || (node0.10 || node 4/5)
     const requestHref = `${hostname}${req.url}`;
     const targetHref = `${target?.href}`; // target is undefined when websocket errors
